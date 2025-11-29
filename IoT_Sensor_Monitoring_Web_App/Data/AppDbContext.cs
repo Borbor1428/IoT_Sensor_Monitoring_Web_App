@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using IoT_Sensor_Monitoring_Web_App.Models;
+﻿using IoT_Sensor_Monitoring_Web_App.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace IoT_Sensor_Monitoring_Web_App.Data
 {
     public class AppDbContext : DbContext
@@ -42,15 +43,19 @@ namespace IoT_Sensor_Monitoring_Web_App.Data
                 .WithMany(s => s.AlertRules)
                 .HasForeignKey(a => a.SensorId);
 
+            // 🔴 ÖNEMLİ KISIM: CASCADE KAPANIYOR
+
             modelBuilder.Entity<Alert>()
                 .HasOne(a => a.AlertRule)
                 .WithMany(r => r.Alerts)
-                .HasForeignKey(a => a.AlertRuleId);
+                .HasForeignKey(a => a.AlertRuleId)
+                .OnDelete(DeleteBehavior.Restrict);   // CASCADE YOK
 
             modelBuilder.Entity<Alert>()
                 .HasOne(a => a.Reading)
                 .WithMany(r => r.Alerts)
-                .HasForeignKey(a => a.ReadingId);
+                .HasForeignKey(a => a.ReadingId)
+                .OnDelete(DeleteBehavior.Restrict);   // CASCADE YOK
         }
     }
 }
