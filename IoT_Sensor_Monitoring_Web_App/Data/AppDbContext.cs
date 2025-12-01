@@ -43,19 +43,17 @@ namespace IoT_Sensor_Monitoring_Web_App.Data
                 .WithMany(s => s.AlertRules)
                 .HasForeignKey(a => a.SensorId);
 
-            // 🔴 ÖNEMLİ KISIM: CASCADE KAPANIYOR
-
             modelBuilder.Entity<Alert>()
                 .HasOne(a => a.AlertRule)
                 .WithMany(r => r.Alerts)
                 .HasForeignKey(a => a.AlertRuleId)
-                .OnDelete(DeleteBehavior.Restrict);   // CASCADE YOK
+                .OnDelete(DeleteBehavior.Restrict);   
 
             modelBuilder.Entity<Alert>()
                 .HasOne(a => a.Reading)
                 .WithMany(r => r.Alerts)
                 .HasForeignKey(a => a.ReadingId)
-                .OnDelete(DeleteBehavior.Restrict);   // CASCADE YOK
+                .OnDelete(DeleteBehavior.Restrict);   
         }
     }
 }

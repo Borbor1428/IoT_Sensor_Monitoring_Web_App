@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Retention Settings</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+
+        /* ---- SOL SIDEBAR ---- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: #020617;
+            color: #e5e7eb;
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #1f2937;
+            z-index: 999;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            padding: 0 20px 18px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: #6b7280;
+            padding: 0 20px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar a {
+            padding: 10px 20px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid transparent;
+            transition: background 0.2s, border-left 0.2s, color 0.2s;
+        }
+
+            .sidebar a span.icon {
+                width: 18px;
+            }
+
+            .sidebar a:hover {
+                background: #020617;
+                color: #e5e7eb;
+            }
+
+            .sidebar a.active {
+                background: linear-gradient(90deg, #0f172a, #020617);
+                border-left: 3px solid #38bdf8;
+                color: #f9fafb;
+            }
+
+        /* ---- ANA İÇERİK ---- */
+        .main-content {
+            margin-left: 230px;
+            min-height: 100vh;
+            padding: 22px 26px 30px;
+            background: radial-gradient(circle at top left, #1d2537 0, #020617 55%);
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .main-content {
+                margin-left: 180px;
+            }
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .title-block h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #f9fafb;
+        }
+
+        .title-block small {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .muted-small {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .card {
+            border-radius: 14px;
+            padding: 16px 18px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+            margin-bottom: 18px;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 15px;
+            color: #e5e7eb;
+        }
+
+        .card-sub {
+            margin: 0;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        input[type="number"] {
+            width: 140px;
+            margin-top: 4px;
+            padding: 7px 9px;
+            border-radius: 8px;
+            border: 1px solid rgba(148,163,184,0.6);
+            font-size: 13px;
+            background: #020617;
+            color: #e5e7eb;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.4);
+        }
+
+        button {
+            margin-top: 14px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            background: #38bdf8;
+            color: #0b1120;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #0ea5e9;
+            }
+
+        .status-msg {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        ul.info-list {
+            margin-top: 8px;
+            padding-left: 18px;
+        }
+
+            ul.info-list li {
+                margin-bottom: 4px;
+                font-size: 13px;
+                color: #cbd5f5;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- SOL NAVBAR -->
+    <div class="sidebar">
+        <div class="sidebar-title">IoT Monitoring</div>
+        <div class="sidebar-subtitle">Navigation</div>
+        <a href="/dashboard.html" id="nav-dashboard">
+            <span class="icon">📊</span><span>Dashboard</span>
+        </a>
+        <a href="/devices.html" id="nav-devices">
+            <span class="icon">🔧</span><span>Devices</span>
+        </a>
+        <a href="/alertrules.html" id="nav-alerts">
+            <span class="icon">⚠</span><span>Alert Rules</span>
+        </a>
+        <a href="/retention.html" id="nav-retention">
+            <span class="icon">🗑</span><span>Retention</span>
+        </a>
+        <a href="/sensor-detail.html" id="nav-sensor-detail">
+            <span class="icon"></span><span>sensor detail</span>
+        </a>
+    </div>
+
+    <!-- ANA İÇERİK -->
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="title-block">
+                <h1>Retention Settings</h1>
+                <small>Arşivlenmiş verilerin saklama süresi</small>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header-row">
+                <div>
+                    <p class="card-title">Current Policy</p>
+                    <p class="card-sub">Sistemdeki mevcut saklama ayarı</p>
+                </div>
+            </div>
+
+            <p style="font-size:13px;margin-top:10px;">
+                Şu anda sistem <span class="highlight" id="currentDays">-</span> gün boyunca
+                <strong>SensorReadings</strong> ve <strong>Alerts</strong> verilerini saklıyor.
+            </p>
+            <p class="status-msg" id="currentInfo"></p>
+        </div>
+
+        <div class="card">
+            <div class="card-header-row">
+                <div>
+                    <p class="card-title">Update Retention</p>
+                    <p class="card-sub">Eski verilerin ne kadar süre saklanacağını belirle.</p>
+                </div>
+            </div>
+
+            <label for="daysInput">Saklama süresi (gün):</label>
+            <input type="number" id="daysInput" min="1" value="30" />
+
+            <button id="btnSave">Save</button>
+            <div class="status-msg" id="saveStatus"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header-row">
+                <div>
+                    <p class="card-title">How does it work?</p>
+                    <p class="card-sub">RetentionCleanupService bu ayarı kullanır.</p>
+                </div>
+            </div>
+
+            <ul class="info-list">
+                <li>Bu ayar, <strong>RetentionCleanupService</strong> tarafından okunur.</li>
+                <li>
+                    Servis belirli aralıklarla çalışır ve seçilen günden daha eski
+                    <code>SensorReadings</code> ve <code>Alerts</code> kayıtlarını siler.
+                </li>
+                <li>
+                    Örneğin <strong>7 gün</strong> seçersen, 7 günden eski ham ölçüm verileri
+                    sistemden kaldırılır; dashboard yine yeni gelen verileri gerçek zamanlı gösterir.
+                </li>
+                <li>
+                    Bu, projede istenen <strong>“arşivlenmiş veriler için saklama ayarları”</strong>
+                    gereksinimini karşılar.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // sidebar active
+        (function () {
+            const p = window.location.pathname.toLowerCase();
+            if (p.includes("dashboard")) document.getElementById("nav-dashboard").classList.add("active");
+            if (p.includes("devices")) document.getElementById("nav-devices").classList.add("active");
+            if (p.includes("alertrules")) document.getElementById("nav-alerts").classList.add("active");
+            if (p.includes("retention")) document.getElementById("nav-retention").classList.add("active");
+            if (p.includes("sensor-detail")) document.getElementById("nav-sensor-detail").classList.add("active");
+        })();
+
+        const currentDaysEl = document.getElementById("currentDays");
+        const currentInfoEl = document.getElementById("currentInfo");
+        const daysInputEl = document.getElementById("daysInput");
+        const saveStatusEl = document.getElementById("saveStatus");
+
+        async function loadCurrentRetention() {
+            try {
+                const res = await fetch("/api/retention");
+                if (!res.ok) {
+                    currentDaysEl.textContent = "-";
+                    currentInfoEl.textContent = "Error loading current retention settings.";
+                    return;
+                }
+
+                const data = await res.json();
+                currentDaysEl.textContent = data.daysToKeep;
+                daysInputEl.value = data.daysToKeep;
+
+                if (data.hasSetting) {
+                    currentInfoEl.textContent =
+                        `Policy: "${data.name}" (Id=${data.policyId}), DaysToKeep=${data.daysToKeep}.`;
+                } else {
+                    currentInfoEl.textContent =
+                        "Henüz özel bir politika yok, varsayılan 30 gün kullanılıyor.";
+                }
+            } catch (e) {
+                console.error(e);
+                currentInfoEl.textContent = "Error loading retention data.";
+            }
+        }
+
+        document.getElementById("btnSave").addEventListener("click", async () => {
+            const days = parseInt(daysInputEl.value);
+            if (isNaN(days) || days <= 0) {
+                saveStatusEl.textContent = "Gün sayısı 1'den büyük olmalı.";
+                return;
+            }
+
+            saveStatusEl.textContent = "Saving...";
+
+            try {
+                const res = await fetch("/api/retention", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ daysToKeep: days })
+                });
+
+                if (!res.ok) {
+                    const text = await res.text();
+                    console.error(text);
+                    saveStatusEl.textContent = "Error while saving.";
+                    return;
+                }
+
+                const data = await res.json();
+                saveStatusEl.textContent = `Updated: keep last ${data.daysToKeep} days.`;
+                currentDaysEl.textContent = data.daysToKeep;
+            } catch (e) {
+                console.error(e);
+                saveStatusEl.textContent = "Error while saving.";
+            }
+        });
+
+        loadCurrentRetention();
+    </script>
+</body>
+</html>

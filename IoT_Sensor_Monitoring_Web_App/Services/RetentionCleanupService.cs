@@ -18,7 +18,8 @@ namespace IoT_Sensor_Monitoring_Web_App.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // Her 10 dakikada bir retention kontrolü yapalım
+            _logger.LogInformation("RetentionCleanupService started.");
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -26,49 +27,41 @@ namespace IoT_Sensor_Monitoring_Web_App.Services
                     using var scope = _scopeFactory.CreateScope();
                     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                    var settings = await db.SystemSettings
+                    // geçerli retention ayarını oku
+                    var system = await db.SystemSettings
                         .Include(s => s.CurrentRetentionPolicy)
                         .FirstOrDefaultAsync(stoppingToken);
 
-                    if (settings?.CurrentRetentionPolicy != null)
-                    {
-                        var days = settings.CurrentRetentionPolicy.DaysToKeep;
-                        var cutoff = DateTime.UtcNow.AddDays(-days);
+                    int daysToKeep = system?.CurrentRetentionPolicy?.DaysToKeep ?? 30;
+                    var cutoff = DateTime.UtcNow.AddDays(-daysToKeep);
 
-                        _logger.LogInformation("RetentionCleanup: deleting data older than {Cutoff}", cutoff);
+                    _logger.LogInformation(
+                        "Retention cleanup running. DaysToKeep={Days}, Cutoff={Cutoff}",
+                        daysToKeep, cutoff);
 
-                        // Önce eski reading'lere bağlı alarmları sil
-                        var oldAlerts = await db.Alerts
-                            .Include(a => a.Reading)
-                            .Where(a => a.Reading.RecordedAt < cutoff)
-                            .ToListAsync(stoppingToken);
+                    // Önce eski Alerts sil
+                    var oldAlerts = db.Alerts
+                        .Where(a => a.TriggeredAt < cutoff);
 
-                        if (oldAlerts.Any())
-                        {
-                            db.Alerts.RemoveRange(oldAlerts);
-                            await db.SaveChangesAsync(stoppingToken);
-                        }
+                    // Sonra eski SensorReadings sil
+                    var oldReadings = db.SensorReadings
+                        .Where(r => r.RecordedAt < cutoff);
 
-                        // Sonra eski sensor reading'leri sil
-                        var oldReadings = await db.SensorReadings
-                            .Where(r => r.RecordedAt < cutoff)
-                            .ToListAsync(stoppingToken);
+                    db.Alerts.RemoveRange(oldAlerts);
+                    db.SensorReadings.RemoveRange(oldReadings);
 
-                        if (oldReadings.Any())
-                        {
-                            db.SensorReadings.RemoveRange(oldReadings);
-                            await db.SaveChangesAsync(stoppingToken);
-                        }
-                    }
+                    await db.SaveChangesAsync(stoppingToken);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error while running retention cleanup.");
+                    _logger.LogError(ex, "Error in RetentionCleanupService.");
                 }
 
-                // 10 dakika bekle
-                await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                // Çok sık olmasına gerek yok – 5 dakikada bir kontrol yeterli
+                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
+
+            _logger.LogInformation("RetentionCleanupService stopped.");
         }
     }
 }

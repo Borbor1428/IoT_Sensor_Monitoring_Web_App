@@ -3,7 +3,7 @@
     public class RetentionPolicy
     {
         public int RetentionPolicyId { get; set; }
-        public string Name { get; set; } = null!;    // "1 Week", "1 Month"
-        public int DaysToKeep { get; set; }          // 7, 30 vs.
+        public string Name { get; set; } = null!;   
+        public int DaysToKeep { get; set; }          
     }
 }

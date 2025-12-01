@@ -4,9 +4,9 @@
     {
         public int SensorId { get; set; }
         public int DeviceId { get; set; }
-        public string SensorName { get; set; } = null!; // "Temp Sensor 1"
-        public string MetricType { get; set; } = null!; // "Temperature", "Humidity"
-        public string Unit { get; set; } = null!;       // "°C", "%"
+        public string SensorName { get; set; } = null!; 
+        public string MetricType { get; set; } = null!; 
+        public string Unit { get; set; } = null!;       
 
         public bool IsActive { get; set; } = true;
 

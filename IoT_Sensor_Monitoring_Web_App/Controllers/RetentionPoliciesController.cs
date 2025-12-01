@@ -16,14 +16,13 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/retentionpolicies
+  
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RetentionPolicy>>> GetPolicies()
         {
             return await _context.RetentionPolicies.ToListAsync();
         }
 
-        // GET: api/retentionpolicies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<RetentionPolicy>> GetPolicy(int id)
         {
@@ -34,7 +33,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return policy;
         }
 
-        // POST: api/retentionpolicies
+        
         [HttpPost]
         public async Task<ActionResult<RetentionPolicy>> PostPolicy(RetentionPolicy policy)
         {
@@ -44,7 +43,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return CreatedAtAction(nameof(GetPolicy), new { id = policy.RetentionPolicyId }, policy);
         }
 
-        // PUT: api/retentionpolicies/5
+  
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPolicy(int id, RetentionPolicy policy)
         {
@@ -68,7 +67,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return NoContent();
         }
 
-        // DELETE: api/retentionpolicies/5
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePolicy(int id)
         {

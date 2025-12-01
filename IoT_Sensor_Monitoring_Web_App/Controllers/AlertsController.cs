@@ -16,7 +16,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/alerts
+       
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alert>>> GetAlerts()
         {
@@ -27,7 +27,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/alerts/unacknowledged
         [HttpGet("unacknowledged")]
         public async Task<ActionResult<IEnumerable<Alert>>> GetUnacknowledged()
         {
@@ -37,7 +36,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
                 .ToListAsync();
         }
 
-        // PUT: api/alerts/ack/5   (alerti okundu işaretle)
+      
         [HttpPut("ack/{id}")]
         public async Task<IActionResult> Acknowledge(int id)
         {

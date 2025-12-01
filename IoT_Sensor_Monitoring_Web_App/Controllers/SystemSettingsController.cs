@@ -16,7 +16,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/systemsettings/current
+      
         [HttpGet("current")]
         public async Task<ActionResult<SystemSetting>> GetCurrent()
         {
@@ -40,7 +40,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             public int? CurrentRetentionPolicyId { get; set; }
         }
 
-        // PUT: api/systemsettings/current
+      
         [HttpPut("current")]
         public async Task<IActionResult> SetCurrentRetention(UpdateRetentionRequest request)
         {

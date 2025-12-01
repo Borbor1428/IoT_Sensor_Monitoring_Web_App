@@ -19,8 +19,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/devices
-        // Tüm cihazları DTO olarak döner (cycle problemi yok)
+       
         [HttpGet]
         public async Task<ActionResult> GetDevices()
         {
@@ -46,7 +45,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return Ok(devices);
         }
 
-        // GET: api/devices/5
+        
         [HttpGet("{id}")]
         public async Task<ActionResult> GetDevice(int id)
         {
@@ -76,15 +75,13 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return Ok(device);
         }
 
-        // POST: api/devices
-        // Body'den gelen Device nesnesini aynen kaydediyoruz
         [HttpPost]
         public async Task<ActionResult<Device>> PostDevice(Device device)
         {
             _context.Devices.Add(device);
             await _context.SaveChangesAsync();
 
-            // Type bilgisini de dolduralım (isteğe bağlı)
+          
             await _context.Entry(device).Reference(d => d.DeviceType).LoadAsync();
 
             return CreatedAtAction(nameof(GetDevice), new { id = device.DeviceId }, new
@@ -104,7 +101,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             });
         }
 
-        // PUT: api/devices/5
+      
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDevice(int id, Device device)
         {
@@ -128,7 +125,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return NoContent();
         }
 
-        // DELETE: api/devices/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDevice(int id)
         {

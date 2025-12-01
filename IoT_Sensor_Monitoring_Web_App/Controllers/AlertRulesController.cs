@@ -16,7 +16,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/alertrules
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AlertRule>>> GetAlertRules()
         {
@@ -25,7 +24,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/alertrules/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AlertRule>> GetAlertRule(int id)
         {
@@ -39,28 +37,22 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return rule;
         }
 
-        // GET: api/alertrules/by-sensor/3
-        [HttpGet("by-sensor/{sensorId}")]
-        public async Task<ActionResult<IEnumerable<AlertRule>>> GetRulesForSensor(int sensorId)
-        {
-            var rules = await _context.AlertRules
-                .Where(r => r.SensorId == sensorId)
-                .ToListAsync();
-
-            return rules;
-        }
-
-        // POST: api/alertrules
+     
         [HttpPost]
         public async Task<ActionResult<AlertRule>> PostAlertRule(AlertRule rule)
         {
+            
+            if (!await _context.Sensors.AnyAsync(s => s.SensorId == rule.SensorId))
+            {
+                return BadRequest($"SensorId {rule.SensorId} için bir sensör bulunamadı.");
+            }
+
             _context.AlertRules.Add(rule);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetAlertRule), new { id = rule.AlertRuleId }, rule);
         }
 
-        // PUT: api/alertrules/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAlertRule(int id, AlertRule rule)
         {
@@ -75,7 +67,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.AlertRules.Any(r => r.AlertRuleId == id))
+                if (!await _context.AlertRules.AnyAsync(r => r.AlertRuleId == id))
                     return NotFound();
                 else
                     throw;
@@ -84,7 +76,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return NoContent();
         }
 
-        // DELETE: api/alertrules/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlertRule(int id)
         {

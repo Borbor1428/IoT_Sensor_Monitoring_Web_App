@@ -4,7 +4,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Models
 {
     public class SensorReading
     {
-        [Key]                            // 🔑 PRIMARY KEY
+        [Key]                            
         public int ReadingId { get; set; }
 
         public int SensorId { get; set; }

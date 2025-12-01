@@ -4,9 +4,9 @@
     {
         public int DeviceId { get; set; }
 
-        public string DeviceName { get; set; } = null!; // Örn: "Device-001"
+        public string DeviceName { get; set; } = null!; 
         public int DeviceTypeId { get; set; }
-        public string? Location { get; set; }           // Örn: "Lab 1"
+        public string? Location { get; set; }           
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int ReadingIntervalSeconds { get; set; } = 5;

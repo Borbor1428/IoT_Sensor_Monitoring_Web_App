@@ -27,127 +27,102 @@ namespace IoT_Sensor_Monitoring_Web_App.Services
                 using var scope = _scopeFactory.CreateScope();
                 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                // Cihaz bilgisiyle birlikte tüm aktif sensörleri çek
+                // Tüm aktif sensörler
                 var sensors = await db.Sensors
+                    .Where(s => s.IsActive)
                     .Include(s => s.Device)
-                    .Where(s => s.IsActive && s.Device.IsActive)
                     .ToListAsync(stoppingToken);
-
-                var now = DateTime.UtcNow;
 
                 foreach (var sensor in sensors)
                 {
-                    int intervalSeconds = sensor.Device.ReadingIntervalSeconds;
-                    if (intervalSeconds <= 0)
-                        intervalSeconds = 5; // default
-
-                    var cutoff = now.AddSeconds(-intervalSeconds);
-
-                    // Bu sensörün son okumasını bul
-                    var lastReading = await db.SensorReadings
-                        .Where(r => r.SensorId == sensor.SensorId)
-                        .OrderByDescending(r => r.RecordedAt)
-                        .FirstOrDefaultAsync(stoppingToken);
-
-                    // Eğer son okuma interval içinde ise yeni veri üretme
-                    if (lastReading != null && lastReading.RecordedAt > cutoff)
-                        continue;
-
-                    double value = GenerateValueFor(sensor);
+                    double generatedValue = GenerateValueFor(sensor);
 
                     var reading = new SensorReading
                     {
                         SensorId = sensor.SensorId,
-                        Value = value,
-                        RecordedAt = now
+                        Value = generatedValue,
+                        RecordedAt = DateTime.UtcNow
                     };
 
                     db.SensorReadings.Add(reading);
                     await db.SaveChangesAsync(stoppingToken);
 
-                    // 🔹 Alert kurallarını kontrol et
+                  
+                    await _hubContext.Clients.All.SendAsync("ReceiveReading", new
+                    {
+                        SensorId = sensor.SensorId,
+                        SensorName = sensor.SensorName,
+                        Value = generatedValue,
+                        RecordedAt = reading.RecordedAt,
+                        Unit = sensor.Unit,
+                        MetricType = sensor.MetricType
+                    }, cancellationToken: stoppingToken);
+
+                 
                     var rules = await db.AlertRules
                         .Where(r => r.SensorId == sensor.SensorId && r.IsActive)
                         .ToListAsync(stoppingToken);
 
                     foreach (var rule in rules)
                     {
-                        if (IsAlertTriggered(rule, value))
+                        if (IsTriggered(rule, generatedValue))
                         {
+                            
                             var alert = new Alert
                             {
                                 AlertRuleId = rule.AlertRuleId,
                                 ReadingId = reading.ReadingId,
-                                TriggeredAt = now,
+                                TriggeredAt = DateTime.UtcNow,
                                 IsAcknowledged = false
                             };
 
                             db.Alerts.Add(alert);
                             await db.SaveChangesAsync(stoppingToken);
 
-                            await _hubContext.Clients.All.SendAsync(
-                                "ReceiveAlert",
-                                new
-                                {
-                                    AlertId = alert.AlertId,
-                                    SensorId = sensor.SensorId,
-                                    SensorName = sensor.SensorName,
-                                    rule.ConditionType,
-                                    rule.ThresholdValue,
-                                    Value = reading.Value,
-                                    alert.TriggeredAt,
-                                    rule.Message
-                                },
-                                cancellationToken: stoppingToken
-                            );
+                          
+                            await _hubContext.Clients.All.SendAsync("ReceiveAlert", new
+                            {
+                                SensorId = sensor.SensorId,
+                                SensorName = sensor.SensorName,
+                                Value = generatedValue,
+                                TriggeredAt = alert.TriggeredAt,
+                                ConditionType = rule.ConditionType,
+                                ThresholdValue = rule.ThresholdValue,
+                                Message = rule.Message
+                            }, cancellationToken: stoppingToken);
                         }
                     }
-
-                    // 🔹 Normal reading yayını
-                    await _hubContext.Clients.All.SendAsync(
-                        "ReceiveReading",
-                        new
-                        {
-                            SensorId = sensor.SensorId,
-                            SensorName = sensor.SensorName,
-                            MetricType = sensor.MetricType,
-                            Unit = sensor.Unit,
-                            Value = value,
-                            RecordedAt = reading.RecordedAt
-                        },
-                        cancellationToken: stoppingToken
-                    );
                 }
 
-                // Döngü frekansı genel; device bazlı interval içeride kontrol ediliyor
-                await Task.Delay(TimeSpan.FromSeconds(3), stoppingToken);
+              
+                await Task.Delay(5000, stoppingToken);
             }
+        }
+
+        private bool IsTriggered(AlertRule rule, double value)
+        {
+          
+            var cond = (rule.ConditionType ?? "").Trim().ToLower();
+
+            return cond switch
+            {
+                "above" => value > rule.ThresholdValue,
+                "below" => value < rule.ThresholdValue,
+                _ => false
+            };
         }
 
         private double GenerateValueFor(Sensor sensor)
         {
-            var metric = sensor.MetricType.ToLower();
+            var metric = (sensor.MetricType ?? "").Trim().ToLower();
 
             return metric switch
             {
-                "temperature" => 15 + _random.NextDouble() * 15, // 15-30 °C
-                "humidity" => 30 + _random.NextDouble() * 40, // 30-70 %
-                "pressure" => 980 + _random.NextDouble() * 40, // 980-1020 hPa
-                "airquality" => 50 + _random.NextDouble() * 100, // 50-150 (AQI/ppm basitleştirilmiş)
-                _ => _random.NextDouble() * 100
-            };
-        }
-
-        private bool IsAlertTriggered(AlertRule rule, double value)
-        {
-            return rule.ConditionType switch
-            {
-                ">" => value > rule.ThresholdValue,
-                ">=" => value >= rule.ThresholdValue,
-                "<" => value < rule.ThresholdValue,
-                "<=" => value <= rule.ThresholdValue,
-                "==" => Math.Abs(value - rule.ThresholdValue) < 0.0001,
-                _ => false
+                "temperature" => 15 + _random.NextDouble() * 15, // 15 - 30 °C
+                "humidity" => 30 + _random.NextDouble() * 40, // 30 - 70 %
+                "pressure" => 980 + _random.NextDouble() * 40, // 980 - 1020 hPa
+                "airquality" => 30 + _random.NextDouble() * 120, // 30 - 150 AQI
+                _ => _random.NextDouble() * 100       // 0 - 100 default
             };
         }
     }

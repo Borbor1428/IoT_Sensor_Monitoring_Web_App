@@ -1,134 +1,211 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-        // Navbar'da aktif sayfayı işaretle
-        (function () {
-            const path = window.location.pathname.toLowerCase();
-            const dashLink = document.getElementById("nav-dashboard");
-            const devLink = document.getElementById("nav-devices");
+    <meta charset="UTF-8" />
+    <title>Devices & Sensors</title>
 
-            if (!dashLink || !devLink) return;
-
-            if (path.includes("dashboard")) {
-                dashLink.classList.add("active");
-            } else if (path.includes("devices")) {
-                devLink.classList.add("active");
-            }
-        })();
-    </script>
-
-    <meta charset="UTF-8">
-    <title>Device & Sensor Registration</title>
     <style>
-        /* NAVBAR */
-        .navbar {
-            background: #111827;
-            color: #f9fafb;
-            padding: 10px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-            margin: -20px -20px 20px -20px; /* sayfanın üst paddingini sıfırlamak için */
+        * {
+            box-sizing: border-box;
         }
-
-        .navbar-brand {
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .navbar-links {
-            display: flex;
-            gap: 16px;
-        }
-
-            .navbar-links a {
-                color: #e5e7eb;
-                text-decoration: none;
-                font-size: 14px;
-                padding: 6px 10px;
-                border-radius: 999px;
-            }
-
-                .navbar-links a:hover {
-                    background: #1f2937;
-                }
-
-                .navbar-links a.active {
-                    background: #2563eb;
-                    color: #f9fafb;
-                }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f4f5f7;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
         }
 
-        h1, h2, h3 {
-            margin-top: 0;
+        /* ---- SOL SIDEBAR ---- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 230px;
+            height: 100vh;
+            background: #020617;
+            color: #e5e7eb;
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #1f2937;
+            z-index: 999;
         }
 
-        .container {
-            max-width: 950px;
-            margin: 0 auto;
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            padding: 0 20px 18px;
         }
 
-        .card {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: #6b7280;
+            padding: 0 20px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        label {
-            display: block;
-            margin-top: 8px;
-            font-size: 13px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 6px 8px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            margin-top: 2px;
-            font-size: 13px;
-        }
-
-        button {
-            margin-top: 10px;
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: none;
-            background: #2563eb;
-            color: white;
+        .sidebar a {
+            padding: 10px 20px;
             font-size: 14px;
-            cursor: pointer;
+            text-decoration: none;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid transparent;
+            transition: background 0.2s, border-left 0.2s, color 0.2s;
         }
 
-            button:hover {
-                background: #1d4ed8;
+            .sidebar a span.icon {
+                width: 18px;
             }
 
-        .status {
-            font-size: 12px;
-            margin-top: 8px;
-            color: #6b7280;
-        }
+            .sidebar a:hover {
+                background: #020617;
+                color: #e5e7eb;
+            }
 
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            .sidebar a.active {
+                background: linear-gradient(90deg, #0f172a, #020617);
+                border-left: 3px solid #38bdf8;
+                color: #f9fafb;
+            }
+
+        /* ---- ANA İÇERİK ---- */
+        .main-content {
+            margin-left: 230px;
+            min-height: 100vh;
+            padding: 22px 26px 30px;
+            background: radial-gradient(circle at top left, #1d2537 0, #020617 55%);
         }
 
         @media (max-width: 900px) {
-            .row {
+            .sidebar {
+                width: 180px;
+            }
+
+            .main-content {
+                margin-left: 180px;
+            }
+        }
+
+        .page-header {
+            margin-bottom: 18px;
+        }
+
+            .page-header h1 {
+                margin: 0 0 4px;
+                font-size: 22px;
+                color: #f9fafb;
+            }
+
+            .page-header small {
+                color: #9ca3af;
+                font-size: 12px;
+            }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 1000px) {
+            .grid-2 {
                 grid-template-columns: 1fr;
             }
+        }
+
+        .card {
+            border-radius: 14px;
+            padding: 16px 18px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 15px;
+            color: #e5e7eb;
+        }
+
+        .card-sub {
+            margin: 0;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #cbd5f5;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid #1e293b;
+            background: #020617;
+            color: #e5e7eb;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-primary {
+            margin-top: 12px;
+            padding: 7px 16px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+            color: #0b1120;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+            .btn-primary:hover {
+                filter: brightness(1.05);
+            }
+
+        .muted-small {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 6px;
         }
 
         table {
@@ -138,339 +215,313 @@
             font-size: 13px;
         }
 
+        thead {
+            background: rgba(15,23,42,0.96);
+        }
+
         th, td {
-            border: 1px solid #e5e7eb;
-            padding: 6px 8px;
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(55,65,81,0.8);
             text-align: left;
         }
 
         th {
-            background: #f9fafb;
+            font-weight: 500;
+            color: #9ca3af;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+            tbody tr:hover {
+                background: rgba(30,64,175,0.25);
+            }
+
+        .pill {
+            display: inline-flex;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(248, 250, 252, 0.06);
+            color: #e5e7eb;
+        }
+
+        .tag {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #6b7280;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-brand">IoT Sensor Monitoring</div>
-        <div class="navbar-links">
-            <a href="/dashboard.html" id="nav-dashboard">Dashboard</a>
-            <a href="/devices.html" id="nav-devices">Devices</a>
-        </div>
+
+    <!-- SOL NAVBAR -->
+    <div class="sidebar">
+        <div class="sidebar-title">IoT Monitoring</div>
+        <div class="sidebar-subtitle">Navigation</div>
+        <a href="/dashboard.html" id="nav-dashboard">
+            <span class="icon">📊</span><span>Dashboard</span>
+        </a>
+        <a href="/devices.html" id="nav-devices">
+            <span class="icon">🔧</span><span>Devices</span>
+        </a>
+        <a href="/alertrules.html" id="nav-alerts">
+            <span class="icon">⚠</span><span>Alert Rules</span>
+        </a>
+        <a href="/retention.html" id="nav-retention">
+            <span class="icon">🗑</span><span>Retention</span>
+        </a>
     </div>
 
-    <div class="container">
-        <!-- senin mevcut içeriklerin (cards, charts vs) bu container içinde kalsın -->
+    <!-- ANA İÇERİK -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Devices & Sensors</h1>
+            <small>Cihaz kaydı, mevcut cihazlar ve sensör detayına hızlı geçiş</small>
+        </div>
 
-        <div class="container">
-            <h1>Device & Sensor Registration</h1>
-
-            <div class="row">
-                <!-- SADECE DEVICE KAYDI -->
-                <div class="card">
-                    <h2>Register Device</h2>
-
-                    <label for="deviceName">Device Name</label>
-                    <input type="text" id="deviceName" placeholder="e.g. Lab Node 1" />
-
-                    <label for="deviceLocation">Location</label>
-                    <input type="text" id="deviceLocation" placeholder="e.g. Room 101" />
-
-                    <!-- Metric Type -->
-                    <label for="deviceMetricType">Metric Type</label>
-                    <select id="deviceMetricType">
-                        <option value="Temperature">Temperature</option>
-                        <option value="Humidity">Humidity</option>
-                        <option value="Pressure">Pressure</option>
-                        <option value="AirQuality">AirQuality</option>
-                    </select>
-
-                    <!-- Unit (metric'e göre otomatik dolacak) -->
-                    <label for="deviceUnit">Unit</label>
-                    <select id="deviceUnit"></select>
-
-                    <!-- Interval -->
-                    <label for="deviceInterval">Reading Interval (seconds)</label>
-                    <input type="number" id="deviceInterval" value="5" min="1" />
-
-                    <button id="btnAddDevice">Create Device</button>
-                    <div class="status" id="deviceStatus"></div>
+        <!-- ÜST KISIM: Yeni cihaz formu + bilgi kutusu -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-header-row">
+                    <div>
+                        <p class="card-title">Register Device</p>
+                        <p class="card-sub">Yeni cihaz ekleyin ve temel sensör bilgilerini belirleyin.</p>
+                    </div>
                 </div>
 
-                <!-- KÜÇÜK AÇIKLAMA KARTI -->
-                <div class="card">
-                    <h2>Info</h2>
-                    <p style="font-size:13px;">
-                        Her cihaz, seçilen <strong>Metric Type</strong>'a göre tek bir sensörle oluşturulur:
-                    </p>
-                    <ul style="font-size:13px;">
-                        <li><strong>Temperature</strong> → Sıcaklık Sensörü (°C veya °F)</li>
-                        <li><strong>Humidity</strong> → Nem Sensörü (%)</li>
-                        <li><strong>Pressure</strong> → Basınç Sensörü (hPa veya bar)</li>
-                        <li><strong>AirQuality</strong> → Hava Kalitesi Sensörü (ppm veya AQI)</li>
-                    </ul>
-                    <p style="font-size:13px;">
-                        <strong>Reading Interval</strong> cihazın ne sıklıkla veri üreteceğini belirler
-                        (örneğin her 5 saniyede bir, 10 saniyede bir).
-                    </p>
-                </div>
+                <form id="deviceForm">
+                    <div class="form-row">
+                        <div>
+                            <label for="deviceName">Device Name</label>
+                            <input id="deviceName" type="text" placeholder="e.g. Lab Node 1" required />
+                        </div>
+                        <div>
+                            <label for="deviceLocation">Location</label>
+                            <input id="deviceLocation" type="text" placeholder="e.g. Room 101" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="metricType">Metric Type</label>
+                            <select id="metricType" required>
+                                <option value="Temperature">Temperature</option>
+                                <option value="Humidity">Humidity</option>
+                                <option value="Pressure">Pressure</option>
+                                <option value="AirQuality">Air Quality</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="unitSelect">Unit</label>
+                            <select id="unitSelect" required>
+                                <!-- JS metric'e göre dolduracak -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div>
+                            <label for="intervalSeconds">Reading Interval (seconds)</label>
+                            <input id="intervalSeconds" type="number" min="1" value="5" />
+                        </div>
+                        <div>
+                            <label class="tag">&nbsp;</label>
+                            <div class="muted-small">
+                                Device kayıt edildiğinde varsayılan bir sensör oluşturulur.
+                                Ayrı ek sensörleri istersen Swagger veya sensör sayfandan ekleyebilirsin.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Create Device</button>
+                    <div class="muted-small" id="deviceFormStatus"></div>
+                </form>
             </div>
 
-            <!-- DEVICES TABLE -->
             <div class="card">
-                <h2>Devices</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Type (Metric)</th>
-                            <th>Location</th>
-                            <th>Interval (s)</th>
-                            <th>Active</th>
-                        </tr>
-                    </thead>
-                    <tbody id="deviceTableBody">
-                        <tr><td colspan="6">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- İSTEĞE BAĞLI EK SENSOR -->
-            <div class="card">
-                <h2>Register Additional Sensor</h2>
-
-                <label for="sensorDeviceSelect">Device</label>
-                <select id="sensorDeviceSelect"></select>
-
-                <label for="sensorName">Sensor Name</label>
-                <input type="text" id="sensorName" placeholder="e.g. Extra Temperature Sensor" />
-
-                <label for="metricType">Metric Type</label>
-                <input type="text" id="metricType" placeholder="e.g. Temperature, Humidity" />
-
-                <label for="unit">Unit</label>
-                <input type="text" id="unit" placeholder="e.g. °C, %, hPa, ppm" />
-
-                <button id="btnAddSensor">Create Sensor</button>
-                <div class="status" id="sensorStatus"></div>
+                <p class="card-title">Info</p>
+                <p class="card-sub">Bu sayfa, cihaz yönetimi ve detay sayfalarına geçiş için kullanılır.</p>
+                <ul class="muted-small">
+                    <li>
+                        Tablodaki herhangi bir satıra tıkladığında,
+                        <strong>Device Detail</strong> sayfası açılır.
+                    </li>
+                    <li>
+                        Device Detail sayfasında:
+                        sensör listesi, seçili sensörün geçmiş grafiği ve alert geçmişi gösterilir.
+                    </li>
+                    <li>Gerçek zamanlı veriler hâlâ Dashboard üzerinden izlenir.</li>
+                </ul>
             </div>
         </div>
 
-        <script>
-            const deviceTableBody = document.getElementById("deviceTableBody");
-            const deviceStatusEl = document.getElementById("deviceStatus");
-            const sensorDeviceSelectEl = document.getElementById("sensorDeviceSelect");
-            const sensorStatusEl = document.getElementById("sensorStatus");
+        <!-- ALT KISIM: Cihaz listesi -->
+        <div class="card">
+            <div class="card-header-row">
+                <div>
+                    <p class="card-title">Devices</p>
+                    <p class="card-sub">Kayıtlı tüm cihazlar. Detay için satıra tıklayın.</p>
+                </div>
+                <div class="muted-small" id="devicesSummary">Loading...</div>
+            </div>
 
-            const metricTypeSelect = document.getElementById("deviceMetricType");
-            const unitSelect = document.getElementById("deviceUnit");
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Metric / Unit</th>
+                        <th>Location</th>
+                        <th>Interval (s)</th>
+                        <th>Sensors</th>
+                    </tr>
+                </thead>
+                <tbody id="devicesBody">
+                    <tr><td colspan="6" class="muted-small">Loading devices...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div> <!-- /main-content -->
 
-            // Metric -> Unit mapping
-            function refreshUnitOptions() {
-                const metric = metricTypeSelect.value;
-                unitSelect.innerHTML = "";
+    <script>
+        // Sidebar'da aktif link
+        (function () {
+            const p = window.location.pathname.toLowerCase();
+            if (p.includes("dashboard")) document.getElementById("nav-dashboard").classList.add("active");
+            if (p.includes("devices")) document.getElementById("nav-devices").classList.add("active");
+            if (p.includes("alertrules")) document.getElementById("nav-alerts").classList.add("active");
+            if (p.includes("retention")) document.getElementById("nav-retention").classList.add("active");
+        })();
 
-                let units = [];
+        const metricTypeSelect = document.getElementById("metricType");
+        const unitSelect = document.getElementById("unitSelect");
+        const deviceForm = document.getElementById("deviceForm");
+        const formStatusEl = document.getElementById("deviceFormStatus");
+        const devicesBodyEl = document.getElementById("devicesBody");
+        const devicesSummaryEl = document.getElementById("devicesSummary");
 
-                if (metric === "Temperature") {
-                    units = ["°C", "°F"];
-                } else if (metric === "Humidity") {
-                    units = ["%"];
-                } else if (metric === "Pressure") {
-                    units = ["hPa", "bar"];
-                } else if (metric === "AirQuality") {
-                    units = ["ppm", "AQI"];
-                }
+        // Metric -> Unit eşlemesi
+        const metricUnits = {
+            "Temperature": ["°C", "°F"],
+            "Humidity": ["%"],
+            "Pressure": ["hPa", "bar"],
+            "AirQuality": ["AQI", "ppm"]
+        };
 
-                units.forEach(u => {
-                    const opt = document.createElement("option");
-                    opt.value = u;
-                    opt.textContent = u;
-                    unitSelect.appendChild(opt);
-                });
-            }
+        function fillUnits() {
+            const metric = metricTypeSelect.value;
+            const units = metricUnits[metric] || [];
+            unitSelect.innerHTML = "";
+            units.forEach(u => {
+                const opt = document.createElement("option");
+                opt.value = u;
+                opt.textContent = u;
+                unitSelect.appendChild(opt);
+            });
+        }
 
-            metricTypeSelect.addEventListener("change", refreshUnitOptions);
-            // Sayfa ilk açıldığında default doldur
-            refreshUnitOptions();
+        metricTypeSelect.addEventListener("change", fillUnits);
+        fillUnits(); // sayfa açılırken
 
-            // Metric'e göre DeviceTypeId bulan veya oluşturan helper
-            async function getDeviceTypeIdForMetric(metric) {
-                // Tüm device type'ları çek
-                const res = await fetch("/api/devicetypes");
-                let types = [];
-                if (res.ok) {
-                    types = await res.json();
-                }
+        // Yeni device kaydı
+        deviceForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            formStatusEl.textContent = "Saving...";
+            try {
+                const body = {
+                    deviceName: document.getElementById("deviceName").value,
+                    location: document.getElementById("deviceLocation").value,
+                    metricType: metricTypeSelect.value,
+                    unit: unitSelect.value,
+                    readingIntervalSeconds: parseInt(document.getElementById("intervalSeconds").value) || 5
+                };
 
-                // İsim eşleşmesine göre ara (typeName = metric)
-                let found = types.find(t => t.typeName === metric);
-                if (found) return found.deviceTypeId;
-
-                // Yoksa otomatik oluştur (örn. "Temperature")
-                const createRes = await fetch("/api/devicetypes", {
+                // Kendi controller'ına göre URL'yi ayarla:
+                // Eğer sende [HttpPost] api/devices ise aşağıdaki satırı /api/devices yap.
+                const res = await fetch("/api/devices/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ typeName: metric })
+                    body: JSON.stringify(body)
                 });
 
-                if (!createRes.ok) {
-                    throw new Error("Error creating device type for metric: " + metric);
-                }
-
-                const created = await createRes.json();
-                return created.deviceTypeId;
-            }
-
-            async function loadDevices() {
-                const res = await fetch("/api/devices");
                 if (!res.ok) {
-                    deviceTableBody.innerHTML = `
-                            <tr><td colspan="6">Error loading devices.</td></tr>
-                        `;
+                    const txt = await res.text();
+                    throw new Error(txt || "Error from API");
+                }
+
+                formStatusEl.textContent = "Device created successfully.";
+                deviceForm.reset();
+                fillUnits();
+                loadDevices(); // listeyi yenile
+            } catch (err) {
+                console.error(err);
+                formStatusEl.textContent = "Error creating device: " + err.message;
+            }
+        });
+
+        // Cihaz listesini yükle
+        async function loadDevices() {
+            devicesBodyEl.innerHTML =
+                '<tr><td colspan="6" class="muted-small">Loading devices...</td></tr>';
+            devicesSummaryEl.textContent = "Loading...";
+
+            try {
+                const res = await fetch("/api/devices");
+                if (!res.ok) throw new Error("API error");
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    devicesBodyEl.innerHTML =
+                        '<tr><td colspan="6" class="muted-small">No devices registered.</td></tr>';
+                    devicesSummaryEl.textContent = "0 devices";
                     return;
                 }
 
-                const devices = await res.json();
+                devicesBodyEl.innerHTML = "";
+                devicesSummaryEl.textContent = data.length + " devices";
 
-                deviceTableBody.innerHTML = "";
-                sensorDeviceSelectEl.innerHTML = "";
-
-                if (devices.length === 0) {
-                    deviceTableBody.innerHTML = `
-                            <tr><td colspan="6">No devices yet.</td></tr>
-                        `;
-                    return;
-                }
-
-                devices.forEach(d => {
+                data.forEach(d => {
                     const tr = document.createElement("tr");
+                    tr.addEventListener("click", () => openDeviceDetail(d.deviceId));
+
+                    const metric = (d.sensors && d.sensors.length > 0)
+                        ? (d.sensors[0].metricType || "-")
+                        : (d.metricType || "-");
+                    const unit = (d.sensors && d.sensors.length > 0)
+                        ? (d.sensors[0].unit || "")
+                        : (d.unit || "");
+
+                    const sensorCount = d.sensors ? d.sensors.length : 0;
+
                     tr.innerHTML = `
                             <td>${d.deviceId}</td>
-                            <td>${d.deviceName}</td>
-                            <td>${d.deviceType ? d.deviceType.typeName : ""}</td>
-                            <td>${d.location || ""}</td>
-                            <td>${d.readingIntervalSeconds || 0}</td>
-                            <td>${d.isActive ? "Yes" : "No"}</td>
+                            <td>${d.deviceName || "Unnamed"}</td>
+                            <td>${metric} ${unit ? "(" + unit + ")" : ""}</td>
+                            <td>${d.location || "-"}</td>
+                            <td>${d.readingIntervalSeconds || "-"}</td>
+                            <td>
+                                <span class="pill">${sensorCount} sensor</span>
+                            </td>
                         `;
-                    deviceTableBody.appendChild(tr);
-
-                    const opt = document.createElement("option");
-                    opt.value = d.deviceId;
-                    opt.textContent = `${d.deviceName} (#${d.deviceId})`;
-                    sensorDeviceSelectEl.appendChild(opt);
+                    devicesBodyEl.appendChild(tr);
                 });
+            } catch (err) {
+                console.error(err);
+                devicesBodyEl.innerHTML =
+                    '<tr><td colspan="6" class="muted-small">Error loading devices.</td></tr>';
+                devicesSummaryEl.textContent = "Error";
             }
+        }
 
-            // Device + ana sensor ekleme
-            document.getElementById("btnAddDevice").addEventListener("click", async () => {
-                const name = document.getElementById("deviceName").value.trim();
-                const location = document.getElementById("deviceLocation").value.trim();
-                const interval = parseInt(document.getElementById("deviceInterval").value);
-                const metricType = metricTypeSelect.value;
-                const unit = unitSelect.value;
+        function openDeviceDetail(id) {
+            window.location.href = `/device-detail.html?id=${id}`;
+        }
 
-                if (!name) {
-                    deviceStatusEl.textContent = "Device name is required.";
-                    return;
-                }
-                if (!interval || interval <= 0) {
-                    deviceStatusEl.textContent = "Reading interval must be a positive number.";
-                    return;
-                }
-
-                try {
-                    // 1) Metric'e uygun DeviceTypeId'yi bul/oluştur
-                    const typeId = await getDeviceTypeIdForMetric(metricType);
-
-                    // 2) Cihazı oluştur
-                    const deviceRes = await fetch("/api/devices", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            deviceName: name,
-                            deviceTypeId: typeId,
-                            location: location,
-                            isActive: true,
-                            createdAt: new Date().toISOString(),
-                            readingIntervalSeconds: interval
-                        })
-                    });
-
-                    if (!deviceRes.ok) {
-                        deviceStatusEl.textContent = "Error creating device.";
-                        return;
-                    }
-
-                    const createdDevice = await deviceRes.json();
-
-                    // 3) Cihaz için sensör oluştur (seçilen metric + unit ile)
-                    const sensorRes = await fetch("/api/sensors", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            deviceId: createdDevice.deviceId,
-                            sensorName: metricType + " Sensor",
-                            metricType: metricType,
-                            unit: unit,
-                            isActive: true
-                        })
-                    });
-
-                    if (sensorRes.ok) {
-                        deviceStatusEl.textContent = "Device and sensor created.";
-                        document.getElementById("deviceName").value = "";
-                        document.getElementById("deviceLocation").value = "";
-                        document.getElementById("deviceInterval").value = "5";
-                        await loadDevices();
-                    } else {
-                        deviceStatusEl.textContent = "Device created but error creating sensor.";
-                    }
-                } catch (err) {
-                    console.error(err);
-                    deviceStatusEl.textContent = "Error while creating device type/device.";
-                }
-            });
-
-            // Ek sensör ekleme (isteğe bağlı)
-            document.getElementById("btnAddSensor").addEventListener("click", async () => {
-                const deviceId = parseInt(sensorDeviceSelectEl.value);
-                const name = document.getElementById("sensorName").value.trim();
-                const metricType = document.getElementById("metricType").value.trim();
-                const unit = document.getElementById("unit").value.trim();
-
-                if (!deviceId || !name || !metricType) {
-                    sensorStatusEl.textContent = "Device, sensor name and metric type are required.";
-                    return;
-                }
-
-                const res = await fetch("/api/sensors", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        deviceId: deviceId,
-                        sensorName: name,
-                        metricType: metricType,
-                        unit: unit,
-                        isActive: true
-                    })
-                });
-
-                if (res.ok) {
-                    sensorStatusEl.textContent = "Sensor created.";
-                    document.getElementById("sensorName").value = "";
-                    document.getElementById("metricType").value = "";
-                    document.getElementById("unit").value = "";
-                } else {
-                    sensorStatusEl.textContent = "Error creating sensor.";
-                }
-            });
-
-            // Sayfa açıldığında mevcut cihazları yükle
-            (async () => {
-                await loadDevices();
-            })();
-        </script>
-
+        loadDevices();
+    </script>
 </body>
 </html>

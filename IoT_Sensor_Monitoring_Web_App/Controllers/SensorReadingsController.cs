@@ -16,7 +16,6 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             _context = context;
         }
 
-        // GET: api/sensorreadings/by-sensor/5?minutes=60
         [HttpGet("by-sensor/{sensorId}")]
         public async Task<ActionResult<IEnumerable<SensorReading>>> GetReadingsForSensor(
             int sensorId,
@@ -32,8 +31,7 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return readings;
         }
 
-        // (Opsiyonel) direkt son N kaydı getir
-        // GET: api/sensorreadings/last/5?sensorId=1
+  
         [HttpGet("last/{count}")]
         public async Task<ActionResult<IEnumerable<SensorReading>>> GetLastReadings(
             int count,

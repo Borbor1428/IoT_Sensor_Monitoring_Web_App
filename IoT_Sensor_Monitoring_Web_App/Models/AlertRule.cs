@@ -5,7 +5,6 @@
         public int AlertRuleId { get; set; }
         public int SensorId { get; set; }
 
-        // ">", "<", ">=", "<=", "=="
         public string ConditionType { get; set; } = ">";
         public double ThresholdValue { get; set; }
 

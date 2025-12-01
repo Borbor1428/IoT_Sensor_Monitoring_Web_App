@@ -2,7 +2,7 @@
 {
     public class SystemSetting
     {
-        public int SystemSettingId { get; set; }     // Tek satır olacak
+        public int SystemSettingId { get; set; }     
         public int? CurrentRetentionPolicyId { get; set; }
 
         public RetentionPolicy? CurrentRetentionPolicy { get; set; }
