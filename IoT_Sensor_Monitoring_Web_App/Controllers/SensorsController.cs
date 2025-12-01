@@ -87,4 +87,4 @@ namespace IoT_Sensor_Monitoring_Web_App.Controllers
             return NoContent();
         }
     }
-}
+}     
